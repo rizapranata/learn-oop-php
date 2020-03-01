@@ -88,7 +88,7 @@ class DB{
         return $this->runQuery($query,[$dataValues])->rowCount();
     }
 
-    function insert($tableName, $data){
+    public function insert($tableName, $data){
         $dataKeys = array_keys($data);
         $dataValues = array_values($data);
         $placeholder = '('.str_repeat('?,', count($data)-1) . '?)';
@@ -114,7 +114,34 @@ class DB{
         $dataValues = array_values($data);
         array_push($dataValues, $condition[2]);
     
-        $this->runQuery($query, $dataValues)->rowCount();
+        $this->_count = $this->runQuery($query, $dataValues)->rowCount();
+        return true;
+    }
+
+    public function delete($tableName, $condition){
+        $query = "DELETE FROM {$tableName} WHERE {$condition[0]} {$condition[1]} ? ";
+        $this->_count = $this->runQuery($query,[$condition[2]])->rowCount();
+        return true;
+    }
+
+    public function createTable($tableName, $field){
+        $query = "DROP TABLE IF EXISTS {$tableName}";
+        $this->runQuery($query);
+
+        $query = "CREATE TABLE {$tableName} (";
+        foreach ($field as $key => $value) {
+            $query .= "$value, ";
+        }
+        $query = substr($query, 0, -2) . ")";
+        $this->runQuery($query);
+        return true;
+       
+    }
+
+    public function dropTable($tableName){
+        $query = "DROP TABLE IF EXISTS {$tableName}";
+        $this->runQuery($query);
+        return true;
     }
 
 }

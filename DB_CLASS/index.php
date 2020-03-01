@@ -67,17 +67,22 @@ $DB = DB::getInstance();
 // ]);
 
 // // tampilkan semua table barang
-// $tabelBarang = $DB->get('barang');
+$tabelUsers = $DB->select('username,email')->get('users');
+var_dump($tabelUsers);
 
 // =======================================================================
-// method update() 
-$DB->update('barang',
-            ['nama_barang' => 'Smartphone iPhone XR',
-            'harga_barang' => 17999000],
-            ['id_barang' , '=', 5]);
-// tampilkan semua data di table barang
-$tabelBarang = $DB->getWhere('barang',['id_barang', '=', 5]);
+// method createTable() 
+// $result = $DB->createTable('users',
+//                         [
+//                             'id_user INT PRIMARY KEY AUTO_INCREMENT',
+//                             'username VARCHAR(50)',
+//                             'email VARCHAR(50)',
+//                             'password VARCHAR(225)'
+//                         ]);
 
-echo "<pre>";
-print_r($tabelBarang);
-echo "</pre>";
+// Insert data ke table users
+// $DB->insert('users',[
+//                 'username' => 'rina',
+//                 'email' => 'agus@gmail.com',
+//                 'Password' => '123456'
+//                 ]);
