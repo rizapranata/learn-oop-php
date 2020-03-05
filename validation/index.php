@@ -1,19 +1,50 @@
 <?php
 require 'Input.php';
+require 'Validate.php';
 
 $error = [];
 
 if (!empty($_POST)) {
-    if (empty(Input::get('nama_barang'))) {
-        $error[] = "Nama barang tidak boleh kosong";
-    }
-    if (empty(Input::get('jumlah_barang'))) {
-        $error[] = "Jumlah barang tidak boleh kosong";
-    }
-    if (empty(Input::get('harga_barang'))) {
-        $error[] = "Harga barang tidak boleh kosong";
+
+    $validate = new Validate($_POST);
+
+    $nama_barang = $validate->setRules('nama_barang','Nama Barang',[
+        'sanitize' => 'string',
+        'required' => true,
+        'min_char' => 5,
+    ]);
+
+    $jumlah_barang = $validate->setRules('jumlah_barang','Jumlah Barang',[
+        'required' => true,
+        'numeric' => true,
+        'min_value' => 0,
+        'max_value' => 110,
+    ]);
+
+    $harga_barang = $validate->setRules('harga_barang','Harga Barang',[
+        'required' => true,
+        'numeric' => true,
+        'min_value' => 0,
+    ]);
+
+    if ($validate->passed()) {
+        echo "Lolos Validasi!";
+    }else {
+        $error = $validate->getError();
     }
 }
+
+// if (!empty($_POST)) {
+//     if (empty(Input::get('nama_barang'))) {
+//         $error[] = "Nama barang tidak boleh kosong";
+//     }
+//     if (empty(Input::get('jumlah_barang'))) {
+//         $error[] = "Jumlah barang tidak boleh kosong";
+//     }
+//     if (empty(Input::get('harga_barang'))) {
+//         $error[] = "Harga barang tidak boleh kosong";
+//     }
+// }
 
 ?>
 
