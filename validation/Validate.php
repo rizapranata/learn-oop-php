@@ -9,7 +9,11 @@ class Validate{
     }
 
     public function setRules($item, $itemLabel, $rules){
-        $formValue = trim($this->_formMethod[$item]);
+        if (isset($this->_formMethod[$item])) {
+            $formValue = trim($this->_formMethod[$item]);
+        }else {
+            $formValue = "";
+        }
 
         // jalankan proses sanitize untuk setiap item (jika di syaratkan)
         if (array_key_exists('sanitize',$rules)) {
@@ -69,6 +73,14 @@ class Validate{
                     case 'regexp':
                         if (!preg_match($ruleValue, $formValue)) {
                             $this->_errors[$item] = "Pola $itemLabel tidak sesuai";
+                        }
+                    break;
+
+                    case 'unique':
+                        require_once '../DB_CLASS/DB.php';
+                        $DB = DB::getInstance();
+                        if ($DB->check($ruleValue[0], $ruleValue[1],$formValue)) {
+                           $this->_errors[$item] = "$itemLabel sudah terpakai, silahkan pilih nama lain";
                         }
                     break;
             }

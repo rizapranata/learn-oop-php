@@ -1,6 +1,7 @@
 <?php
 require '../validation/Input.php';
 require '../validation/Validate.php';
+require '../DB_CLASS/DB.php';
 
 $error = [];
 
@@ -12,6 +13,7 @@ if (!empty($_POST)) {
         'required' => true,
         'min_char' => 4,
         'regexp' => "/^[A-Za-z]{6,}$/",
+        'unique' => ['users','username']
     ]);
 
     $password = $validate->setRules('password', 'Password', [
@@ -34,7 +36,15 @@ if (!empty($_POST)) {
     ]);
 
     if ($validate->passed()) {
-        echo 'Lolos Validasi!';
+        // masukkan data user baru ke dalam database
+        $DB = DB::getInstance();
+        $newUser = [
+            'username' => $username,
+            'password' => $password,
+            'email' => $email
+        ];
+        $DB->insert('users', $newUser);
+        echo "Data berhasil di tambahkan ke database!";
     } else {
         $error = $validate->getError();
     }
@@ -69,7 +79,7 @@ if (!empty($_POST)) {
 
 <body>
     <div class="container">
-        <h2>Tambah Barang</h2>
+        <h2>Tambah Users</h2>
         <div class="pesan-error">
             <ul>
                 <?php
